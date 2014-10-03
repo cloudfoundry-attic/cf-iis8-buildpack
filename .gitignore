@@ -1,1 +1,6 @@
 iishwc/src/iishwc/Debug
+iishwc/src/iishwc/Release
+iishwc/src/iishwc/x64/Debug
+iishwc/src/iishwc/x64/Release
+*.ilk
+*.pdb

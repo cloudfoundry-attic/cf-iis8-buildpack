@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}</ProjectGuid>
+    <ProjectGuid>{518046C8-B3CD-4789-A964-12C1FE722E88}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>iishwc</RootNamespace>
   </PropertyGroup>

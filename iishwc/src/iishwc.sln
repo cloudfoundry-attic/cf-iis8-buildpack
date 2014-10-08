@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iishwc", "iishwc\iishwc.vcxproj", "{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iishwc_x64", "iishwc\iishwc_x64.vcxproj", "{518046C8-B3CD-4789-A964-12C1FE722E88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,12 +17,20 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|Win32.Build.0 = Debug|Win32
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|x64.ActiveCfg = Debug|x64
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|x64.Build.0 = Debug|x64
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|Win32.ActiveCfg = Release|x64
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|Win32.Build.0 = Release|x64
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|x64.ActiveCfg = Release|x64
-		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|x64.Build.0 = Release|x64
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|x64.ActiveCfg = Debug|Win32
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Debug|x64.Build.0 = Debug|Win32
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|Win32.ActiveCfg = Release|Win32
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|Win32.Build.0 = Release|Win32
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|x64.ActiveCfg = Release|Win32
+		{D577C3D6-9046-40BF-B414-FEECA8FD6EB6}.Release|x64.Build.0 = Release|Win32
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Debug|Win32.ActiveCfg = Debug|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Debug|Win32.Build.0 = Debug|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Debug|x64.ActiveCfg = Debug|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Debug|x64.Build.0 = Debug|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Release|Win32.ActiveCfg = Release|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Release|Win32.Build.0 = Release|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Release|x64.ActiveCfg = Release|x64
+		{518046C8-B3CD-4789-A964-12C1FE722E88}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ $script:exitCode = 0
 function DetectBitness()
 {
     Write-Host("Detecting application bitness...");
-	$assemblies = @(Get-ChildItem -Path $script:appPath -Filter "*.dll" -Recurse)
+	$assemblies = @(Get-ChildItem -Path $script:appPath -Filter "*.dll" -Recurse | ?{$_.FullName -notmatch "\\obj\\?" })
 	foreach ($assembly in $assemblies)
 	{
 		$kind = new-object Reflection.PortableExecutableKinds

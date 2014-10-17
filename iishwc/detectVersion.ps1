@@ -23,12 +23,10 @@ $webConfig.Load($webConfigPath)
 $node = $webConfig.SelectSingleNode("/configuration/system.web/compilation/@targetFramework")
 if ($node)
 {
-    Write-Host("Application requires asp.net v4.0");
 	$version = 40
 }
 else
 {
-    Write-Host("Application requires asp.net v2.0");
 	$version = 20
 }
 

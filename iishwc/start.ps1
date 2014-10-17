@@ -7,7 +7,7 @@ $script:exitCode = 0
 
 function DetectBitness()
 {
-    Write-Host("Detecting application bitness...");
+    Write-Output("Detecting application bitness...");
 	$assemblies = @(Get-ChildItem -Path $script:appPath -Filter "*.dll" -Recurse | ?{$_.FullName -notmatch "\\obj\\?" })
 	foreach ($assembly in $assemblies)
 	{
@@ -20,7 +20,7 @@ function DetectBitness()
         }
         catch
         {
-            Write-Error("Could not detect bitness for assembly $($assembly.Name)");
+            Write-Output("Could not detect bitness for assembly $($assembly.Name)");
             $kind = [System.Reflection.PortableExecutableKinds]"NotAPortableExecutableImage"
         }
 		
@@ -28,25 +28,25 @@ function DetectBitness()
 		{
 			[System.Reflection.PortableExecutableKinds]::Required32Bit
 			{
-                Write-Host("Application requires a 32bit enabled application pool");
+                Write-Output("Application requires a 32bit enabled application pool");
 				return ,$true;                
 			}			
 			([System.Reflection.PortableExecutableKinds]([System.Reflection.PortableExecutableKinds]::Required32Bit -bor [System.Reflection.PortableExecutableKinds]::ILOnly))
 			{
-                Write-Host("Application requires a 32bit enabled application pool");
+                Write-Output("Application requires a 32bit enabled application pool");
 				return ,$true;
 			}
 			default { }
 		}			  		
 	}
 	
-    Write-Host("Application does not require a 32bit enabled application pool");
+    Write-Output("Application does not require a 32bit enabled application pool");
 	return $false
 }
 
 function GetFrameworkFromConfig()
 {
-    Write-Host("Detecting required asp.net version...");
+    Write-Output("Detecting required asp.net version...");
 	$webConfigPath = Join-Path $script:appPath 'web.config'
 	$webConfig = New-Object System.Xml.XmlDocument
 	$webConfig.Load($webConfigPath)
@@ -54,12 +54,12 @@ function GetFrameworkFromConfig()
 	$node = $webConfig.SelectSingleNode("/configuration/system.web/compilation/@targetFramework")
 	if ($node)
 	{
-        Write-Host("Application requires asp.net v4.0");
+        Write-Output("Application requires asp.net v4.0");
 		return "v4.0"
 	}
 	else
 	{
-        Write-Host("Application requires asp.net v2.0");
+        Write-Output("Application requires asp.net v2.0");
 		return "v2.0"
 	}
 }

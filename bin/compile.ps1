@@ -11,7 +11,8 @@ $solutionFile = Get-ChildItem (Join-Path $build_path '*.sln')
 if ($solutionFile -ne $null)
 {
     $solutionFile = $solutionFile[0]
-    Write-Output "Detected solution file ${solutionFile.Name} - building it ..."
+    $solutionName= $solutionFile.Name
+    Write-Output "Detected solution file ${solutionName} - building it ..."
     [Console]::Out.Flush() 
     
     Write-Output 'Restoring nuget packages ...'

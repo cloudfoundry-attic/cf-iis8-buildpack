@@ -162,11 +162,11 @@ if($appSettings -eq $null)
     $null = $configuration.AppendChild($appSettings)
 }
 $element = $webConfig.CreateElement("add")
-$element.SetAttribute('key', "UHURU_LOG_FILE")
+$element.SetAttribute('key', "CF_LOG_FILE")
 $element.SetAttribute('value', (Join-Path $script:logsDir iis.stdout.log))
 $null = $appSettings.AppendChild($element)
 $element = $webConfig.CreateElement("add")
-$element.SetAttribute('key', "UHURU_ERROR_LOG_FILE")
+$element.SetAttribute('key', "CF_ERROR_LOG_FILE")
 $element.SetAttribute('value', (Join-Path $script:logsDir iis.stderr.log))
 $null = $appSettings.AppendChild($element)
 
@@ -175,7 +175,7 @@ if($healthMonitoring -eq $null)
 {
     $healthMonitoring = $webConfig.CreateElement("healthMonitoring")
     $systemWeb = $webConfig.SelectSingleNode("/configuration/system.web")
-    $healthMonitoring.SetAttribute("configSource", "UhuruAspNetEventProvider.config")
+    $healthMonitoring.SetAttribute("configSource", "CloudFoundryAspNetEventProvider.config")
     $null = $systemWeb.AppendChild($healthMonitoring)
 }
 

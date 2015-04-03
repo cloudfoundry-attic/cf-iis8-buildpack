@@ -150,37 +150,6 @@ foreach ($file in $configFiles)
     }        
 }
 
-$webConfigPath = Join-Path $script:appPath "web.config"
-$webConfig = New-Object System.Xml.XmlDocument
-$webConfig.Load($webConfigPath)
-
-$appSettings = $webConfig.SelectSingleNode("/configuration/appSettings")
-if($appSettings -eq $null)
-{
-    $appSettings = $webConfig.CreateElement("appSettings")
-    $configuration = $webConfig.SelectSingleNode("/configuration")
-    $null = $configuration.AppendChild($appSettings)
-}
-$element = $webConfig.CreateElement("add")
-$element.SetAttribute('key', "CF_LOG_FILE")
-$element.SetAttribute('value', (Join-Path $script:logsDir iis.stdout.log))
-$null = $appSettings.AppendChild($element)
-$element = $webConfig.CreateElement("add")
-$element.SetAttribute('key', "CF_ERROR_LOG_FILE")
-$element.SetAttribute('value', (Join-Path $script:logsDir iis.stderr.log))
-$null = $appSettings.AppendChild($element)
-
-$healthMonitoring = $webConfig.SelectSingleNode("/configuration/system.web/healthMonitoring")
-if($healthMonitoring -eq $null)
-{
-    $healthMonitoring = $webConfig.CreateElement("healthMonitoring")
-    $systemWeb = $webConfig.SelectSingleNode("/configuration/system.web")
-    $healthMonitoring.SetAttribute("configSource", "CloudFoundryAspNetEventProvider.config")
-    $null = $systemWeb.AppendChild($healthMonitoring)
-}
-
-$webConfig.Save($webConfigPath)
-
 $null = mkdir (Join-Path $env:TEMP "IIS Temporary Compressed Files")
 
 Write-Host("Starting IIS Process")

@@ -5,24 +5,41 @@ $cache_path = $args[1]
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 $iisPath = Join-Path (get-item $scriptPath ).parent.FullName 'iishwc\*'
 $nugetPath = Join-Path $scriptPath 'nuget.exe'
+$msbuild = Join-Path ([System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()) "MSBuild.exe"
 
-$solutionFile = Get-ChildItem (Join-Path $build_path '*.sln')
+$null = Copy-Item "${build_path}\*" $cache_path -Recurse -Force
 
-if ($solutionFile -ne $null)
+Write-Output "Cleaning build directory ..."
+Remove-Item (Join-Path $build_path '*') -Recurse -Force
+
+$solutionFiles = Get-ChildItem (Join-Path $cache_path '*.sln')
+
+if ($solutionFiles -ne $null)
 {
-    $solutionFile = $solutionFile[0]
+    # *.sln file present
+    if ($solutionFiles.Count -gt 1)
+    {
+        # more than 1 *.sln file
+        Write-Output "More than 1 .sln files present"
+        [Console]::Out.Flush()         
+        exit 1
+    }
+
+    $solutionFile = $solutionFiles[0]
     $solutionName= $solutionFile.Name
     Write-Output "Detected solution file ${solutionName} - building it ..."
     [Console]::Out.Flush() 
     
     Write-Output 'Restoring nuget packages ...'
-    [Console]::Out.Flush() 
+    [Console]::Out.Flush()
+    
+    Push-Location $cache_path
     (& $nugetPath restore -noninteractive) | Write-Output
+    Pop-Location
 
     Write-Output 'Running msbuild ...'
     [Console]::Out.Flush()
     
-    $msbuild = 'C:\Windows\Microsoft.Net\Framework64\v4.0.30319\MSBuild.exe'
     $buildDirName = [guid]::NewGuid().ToString("N")
     $outDir = Join-Path (get-item $scriptPath ).parent.FullName $buildDirName
     
@@ -30,20 +47,45 @@ if ($solutionFile -ne $null)
     
     $env:EnableNuGetPackageRestore = 'true'
 
-    (& $msbuild $solutionFile.fullname /t:Rebuild /p:Platform="Any CPU" /p:OutDir="${outDir}") | Write-Output
+    $buildPlatform = "Any CPU"
+    if(![String]::IsNullOrEmpty($env:MSBUILD_PLATFORM))
+    {
+        $buildPlatform = $env:MSBUILD_PLATFORM
+    }
+
+    $buildConfiguration = ""
+    if(![String]::IsNullOrEmpty($env:MSBUILD_CONFIGURATOIN))
+    {
+        $buildConfiguration = "/p:Configuration=`"${env:MSBUILD_CONFIGURATOIN}`""
+    }
+
+    (& $msbuild $solutionFile.fullname /t:Rebuild /p:Platform="${buildPlatform}" /p:OutDir="${outDir}" ${buildConfiguration}) | Write-Output
 
     $publishedFolder = Get-ChildItem (Join-Path $outDir '_PublishedWebsites\*')
-    
+
     if ($publishedFolder -ne $null)
     {
-        $publishedFolder = $publishedFolder[0]
-
-        Write-Output "Cleaning build directory ..."
-        Remove-Item (Join-Path $build_path '*') -Recurse -Force
-
+        if([String]::IsNullOrEmpty($env:PUBLISH_WEBSITE))
+        {
+            if($publishedFolder.Count -gt 1)
+            {
+                Write-Output "Found more than 1 published website. PUBLISH_WEBSITE is not specified"
+                exit 1
+            }
+            $appPath = $publishedFolder[0]
+        }
+        else
+        {
+            if(!(Test-Path ($publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE)))
+            {
+                Write-Output "$env:PUBLISH_WEBSITE not found"
+                exit 1
+            }
+            $appPath = $publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE 
+        }
         Write-Output "Copying published files ..."
-        $bpAppPath = Join-Path $publishedFolder '*'
-        $null = Copy-Item $bpAppPath $build_path -Recurse -Force
+
+        $null = Copy-Item "${appPath}\*" $build_path -Recurse -Force
     }
     else
     {
@@ -52,6 +94,25 @@ if ($solutionFile -ne $null)
     }
 
     [Console]::Out.Flush()
+}
+else
+{
+    Write-Output "No .sln found. Looking for *.*proj"
+    $projFiles = Get-ChildItem (Join-Path $cache_path '*.*proj')
+    if($projFiles -ne $null)
+    {
+        Write-Output "Found *.*proj. Running msbuild ..."
+        Push-Location $cache_path
+        (& $msbuild) | Write-Output
+        Pop-Location
+    }
+    $null = Copy-Item "${cache_path}\*" $build_path -Recurse -Force
+}
+
+if(!(Test-Path (Join-Path $build_path "web.config")))
+{
+    Write-Output "Web.config not found"
+    exit 1
 }
 
 $iishwcPath = Join-Path $build_path "iishwc"
@@ -62,6 +123,9 @@ write-output "Copying IIS Executable to App directory"
 
 $null = Copy-Item $bpAppPath $build_path -Recurse -Force
 $null = Copy-Item $iisPath $iishwcPath -Recurse -Force
+
+Write-Output "Cleaning cache directory ..."
+Remove-Item (Join-Path $cache_path '*') -Recurse -Force
 
 [Console]::Out.Flush() 
 

@@ -102,11 +102,15 @@ else
     if($projFiles -ne $null)
     {
         Write-Output "Found *.*proj. Running msbuild ..."
+        $pubXml = Join-Path $scriptPath "publish.pubxml"
         Push-Location $cache_path
-        (& $msbuild) | Write-Output
+        (& $msbuild /p:DeployOnBuild=true /p:PublishProfile="${pubXml}" /p:PublishUrl="${build_path}") | Write-Output
         Pop-Location
     }
-    $null = Copy-Item "${cache_path}\*" $build_path -Recurse -Force
+    else
+    {
+        $null = Copy-Item "${cache_path}\*" $build_path -Recurse -Force
+    }
 }
 
 if(!(Test-Path (Join-Path $build_path "web.config")))

@@ -21,30 +21,30 @@ if ($solutionFiles -ne $null)
     {
         # more than 1 *.sln file
         Write-Output "More than 1 .sln files present"
-        [Console]::Out.Flush()         
+        [Console]::Out.Flush()
         exit 1
     }
 
     $solutionFile = $solutionFiles[0]
     $solutionName= $solutionFile.Name
     Write-Output "Detected solution file ${solutionName} - building it ..."
-    [Console]::Out.Flush() 
-    
+    [Console]::Out.Flush()
+
     Write-Output 'Restoring nuget packages ...'
     [Console]::Out.Flush()
-    
+
     Push-Location $cache_path
     (& $nugetPath restore -noninteractive) | Write-Output
     Pop-Location
 
     Write-Output 'Running msbuild ...'
     [Console]::Out.Flush()
-    
+
     $buildDirName = [guid]::NewGuid().ToString("N")
     $outDir = Join-Path (get-item $scriptPath ).parent.FullName $buildDirName
-    
+
     $null = mkdir $outDir
-    
+
     $env:EnableNuGetPackageRestore = 'true'
 
     $buildPlatform = "Any CPU"
@@ -59,7 +59,13 @@ if ($solutionFiles -ne $null)
         $buildConfiguration = "/p:Configuration=`"${env:MSBUILD_CONFIGURATOIN}`""
     }
 
-    (& $msbuild $solutionFile.fullname /t:Rebuild /p:Platform="${buildPlatform}" /p:OutDir="${outDir}" ${buildConfiguration}) | Write-Output
+    (& $msbuild $solutionFile.fullname /t:Rebuild /p:VisualStudioVersion="12.0" /p:Platform="${buildPlatform}" /p:OutDir="${outDir}" ${buildConfiguration}) | Write-Output
+    if ($LastExitCode -ne 0)
+    {
+      Write-Output "msbuild returned exit code ${LastExitCode}"
+      [Console]::Out.Flush()
+      exit 1
+    }
 
     $publishedFolder = Get-ChildItem (Join-Path $outDir '_PublishedWebsites\*')
 
@@ -70,6 +76,7 @@ if ($solutionFiles -ne $null)
             if($publishedFolder.Count -gt 1)
             {
                 Write-Output "Found more than 1 published website. PUBLISH_WEBSITE is not specified"
+                [Console]::Out.Flush()
                 exit 1
             }
             $appPath = $publishedFolder[0]
@@ -79,9 +86,10 @@ if ($solutionFiles -ne $null)
             if(!(Test-Path ($publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE)))
             {
                 Write-Output "$env:PUBLISH_WEBSITE not found"
+                [Console]::Out.Flush()
                 exit 1
             }
-            $appPath = $publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE 
+            $appPath = $publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE
         }
         Write-Output "Copying published files ..."
 
@@ -90,6 +98,7 @@ if ($solutionFiles -ne $null)
     else
     {
         Write-Output 'Could not find a published website after build. Exiting.'
+        [Console]::Out.Flush()
         exit 1
     }
 
@@ -104,7 +113,14 @@ else
         Write-Output "Found *.*proj. Running msbuild ..."
         $pubXml = Join-Path $scriptPath "publish.pubxml"
         Push-Location $cache_path
-        (& $msbuild /p:DeployOnBuild=true /p:PublishProfile="${pubXml}" /p:PublishUrl="${build_path}") | Write-Output
+        (& $msbuild /p:DeployOnBuild=true /p:VisualStudioVersion="12.0" /p:PublishProfile="${pubXml}" /p:PublishUrl="${build_path}") | Write-Output
+        if ($LastExitCode -ne 0)
+        {
+          Write-Output "msbuild returned exit code ${LastExitCode}"
+          [Console]::Out.Flush()
+          exit 1
+        }
+
         Pop-Location
     }
     else
@@ -116,6 +132,7 @@ else
 if(!(Test-Path (Join-Path $build_path "web.config")))
 {
     Write-Output "Web.config not found"
+    [Console]::Out.Flush()
     exit 1
 }
 
@@ -131,7 +148,7 @@ $null = Copy-Item $iisPath $iishwcPath -Recurse -Force
 Write-Output "Cleaning cache directory ..."
 Remove-Item (Join-Path $cache_path '*') -Recurse -Force
 
-[Console]::Out.Flush() 
+[Console]::Out.Flush()
 
 write-output "Done"
 

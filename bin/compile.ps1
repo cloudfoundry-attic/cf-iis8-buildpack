@@ -54,9 +54,9 @@ if ($solutionFiles -ne $null)
     }
 
     $buildConfiguration = ""
-    if(![String]::IsNullOrEmpty($env:MSBUILD_CONFIGURATOIN))
+    if(![String]::IsNullOrEmpty($env:MSBUILD_CONFIGURATION))
     {
-        $buildConfiguration = "/p:Configuration=`"${env:MSBUILD_CONFIGURATOIN}`""
+        $buildConfiguration = "/p:Configuration=`"${env:MSBUILD_CONFIGURATION}`""
     }
 
     (& $msbuild $solutionFile.fullname /t:Rebuild /p:VisualStudioVersion="12.0" /p:Platform="${buildPlatform}" /p:OutDir="${outDir}" ${buildConfiguration}) | Write-Output

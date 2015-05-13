@@ -83,7 +83,8 @@ if ($solutionFiles -ne $null)
         }
         else
         {
-            if(!(Test-Path ($publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE)))
+            $publishWebsitePath = $publishedFolder | Where-Object -Property Name -EQ $env:PUBLISH_WEBSITE            
+            if($publishWebsitePath -eq $null)
             {
                 Write-Output "$env:PUBLISH_WEBSITE not found"
                 [Console]::Out.Flush()

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+  Available Targets:
+
+  /t:Compile
+    Runs compile.bat
+  -->
+
+  <PropertyGroup>
+    <LibraryRoot>$(MSBuildThisFileDirectory)</LibraryRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CompileCommand>&quot;bin\compile.bat&quot; TestApps\iis8 $(LibraryRoot)\cache</CompileCommand>
+  </PropertyGroup>
+
+  <Target Name="Compile">
+    <Exec Command="$(CompileCommand)"/>
+  </Target>
+
+</Project>

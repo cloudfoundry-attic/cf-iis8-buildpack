@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+  Available Targets:
+
+  /t:Compile
+    Runs compile.bat
+  -->
+
+<UsingTask
+  TaskName="SetEnvironmentVariableTask"
+  TaskFactory="CodeTaskFactory"
+  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll">
+
+  <ParameterGroup>
+    <Name ParameterType="System.String" Required="true" />
+    <Value ParameterType="System.String" Required="true" />
+  </ParameterGroup>
+
+  <Task>
+    <Using Namespace="System" />
+    <Code Type="Fragment" Language="cs">
+      <![CDATA[
+        Environment.SetEnvironmentVariable(Name, Value);
+      ]]>
+    </Code>
+  </Task>
+
+</UsingTask>
+  <PropertyGroup>
+    <LibraryRoot>$(MSBuildThisFileDirectory)</LibraryRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CompileCommand>&quot;bin\compile.bat&quot; TestApps\iis8 $(LibraryRoot)\cache</CompileCommand>
+  </PropertyGroup>
+
+  <Target Name="Compile">
+    <SetEnvironmentVariableTask Name="PORT" Value="31221" />
+    <Exec Command="$(CompileCommand)"/>
+  </Target>
+
+</Project>

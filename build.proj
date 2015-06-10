@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <Target Name="Compile">
+    <SetEnvironmentVariableTask Name="PORT" Value="31221" />
     <Exec Command="$(CompileCommand)"/>
   </Target>
 

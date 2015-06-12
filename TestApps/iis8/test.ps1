@@ -7,12 +7,25 @@ $env:HOMEPATH="F:\jenkins\workspace\als-cf-iis8-buildpack-verify"
 
 Start-Process -FilePath "TestApps\iis8\iishwc\start.bat" -PassThru
 
-Start-Sleep -s 10
+$NrRetries=10
+$Counter=1
+$Success=$false
 
 echo "Invoking web request"
-if ( $(invoke-webrequest http://localhost:${env:PORT} ).statuscode -ne 200 ) {
-    throw "Statuscode for invoke-webrequest is not 200"
-}
+while( $Success -eq $false )
+  {
+  if ( $(invoke-webrequest http://localhost:${env:PORT}).statuscode -ne 200 )
+    {
+    $Counter++
+    if ( $Counter -gt $NrRetries ) { throw "App is not reachable on port ${env:PORT}" }
+    echo "Sleeping 2 seconds"
+    Start-Sleep -s 2
+    }
+  else
+    {
+    $Success=$true
+    }
+  }
 
 echo "Killing iis process"
 foreach ($ppid in $(gwmi win32_process | select ProcessID, CommandLine | Where-Object { $_.CommandLine -like "F:\jenkins\workspace\als-cf-iis8-buildpack-verify*" } | select ProcessID)) 

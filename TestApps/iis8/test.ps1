@@ -13,19 +13,27 @@ $Success=$false
 
 echo "Invoking web request"
 while( $Success -eq $false )
+{
+  try
   {
-  if ( $(invoke-webrequest http://localhost:${env:PORT}).statuscode -ne 200 )
+    $statcode=$(invoke-webrequest http://localhost:${env:PORT}).statuscode
+  }
+  catch {}
+  finally
+  {
+    if ( $statcode -ne 200 )
     {
-    $Counter++
-    if ( $Counter -gt $NrRetries ) { throw "App is not reachable on port ${env:PORT}" }
-    echo "Sleeping 2 seconds"
-    Start-Sleep -s 2
+      $Counter++
+      if ( $Counter -eq $NrRetries ) { throw "App is not reachable on port ${env:PORT}" }
+      echo "Sleeping 2 seconds"
+      Start-Sleep -s 2
     }
-  else
+    else
     {
-    $Success=$true
+      $Success=$true
     }
   }
+}
 
 echo "Killing iis process"
 foreach ($ppid in $(gwmi win32_process | select ProcessID, CommandLine | Where-Object { $_.CommandLine -like "F:\jenkins\workspace\als-cf-iis8-buildpack-verify*" } | select ProcessID)) 

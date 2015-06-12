@@ -7,7 +7,7 @@ $env:HOMEPATH="F:\jenkins\workspace\als-cf-iis8-buildpack-verify"
 
 Start-Process -FilePath "TestApps\iis8\iishwc\start.bat" -PassThru
 
-$NrRetries=10
+$NrRetries=5
 $Counter=1
 $Success=$false
 

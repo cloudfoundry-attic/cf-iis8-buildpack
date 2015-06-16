@@ -52,7 +52,7 @@ function compile
 {
   $env:PORT=31221
 
-  cmd /c .\bin\compile.bat TestApps cache
+  cmd /c .\bin\compile.bat TestApps\iis8 cache
 
   if ($LastExitCode -ne 0) {
     throw "Compile failed with exit code $LastExitCode."

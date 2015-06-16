@@ -1,4 +1,4 @@
-function verify
+function test_verify
 {
 $env:PORT=31221
 $env:VCAP_WINDOWS_USER="user"
@@ -39,7 +39,7 @@ while( $Success -eq $false )
 }
 }
 
-function killIIS
+function test_killIIS
 {
 echo "Killing iis process"
 foreach ($ppid in $(gwmi win32_process | select ProcessID, CommandLine | Where-Object { $_.CommandLine -like "F:\jenkins\workspace\als-cf-iis8-buildpack-verify*" } | select ProcessID)) 
@@ -48,7 +48,7 @@ foreach ($ppid in $(gwmi win32_process | select ProcessID, CommandLine | Where-O
   }
 }
 
-function compile
+function test_compile
 {
   $env:PORT=31221
 
@@ -61,7 +61,7 @@ function compile
   echo "Compile is ok"
 }
 
-function detect
+function test_detect
 {
   cmd /c .\bin\detect.bat TestApps\iis8
 
@@ -72,7 +72,7 @@ function detect
   echo "Detect is ok"
 }
 
-function release
+function test_release
 {
   cmd /c .\bin\release.bat TestApps\iis8
 
@@ -82,3 +82,9 @@ function release
 
   echo "Release is ok"
 }
+
+test_detect
+test_release
+test_compile
+test_verify
+test_killIIS

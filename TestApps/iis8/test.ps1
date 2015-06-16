@@ -33,7 +33,7 @@ while( $Success -eq $false )
     else
     {
       $Success=$true
-      exit 0
+      echo "Verify is ok"
     }
   }
 }
@@ -54,33 +54,33 @@ function compile
 
   mkdir TestApps\cache
 
-  TestApps\compile.bat TestApps TestApps\cache
+  cmd /c .\bin\compile.bat TestApps TestApps\cache
 
   if ($LastExitCode -ne 0) {
     throw "Compile failed with exit code $LastExitCode."
   }
 
-  exit 0
+  echo "Compile is ok"
 }
 
 function detect
 {
-  bin\detect.bat TestApps\iis8
+  cmd /c .\bin\detect.bat TestApps\iis8
 
   if ($LastExitCode -ne 0) {
     throw "Detect failed with exit code $LastExitCode."
   }
 
-  exit 0
+  echo "Detect is ok"
 }
 
 function release
 {
-  bin\release.bat TestApps\iis8
+  cmd /c .\bin\release.bat TestApps\iis8
 
   if ($LastExitCode -ne 0) {
     throw "Release failed with exit code $LastExitCode."
   }
 
-  exit 0
+  echo "Release is ok"
 }

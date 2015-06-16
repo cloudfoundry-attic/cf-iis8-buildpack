@@ -52,15 +52,11 @@ function compile
 {
   $env:PORT=31221
 
-  mkdir cache
-
   cmd /c .\bin\compile.bat TestApps cache
 
   if ($LastExitCode -ne 0) {
     throw "Compile failed with exit code $LastExitCode."
   }
-
-  Remove-Item -recurse -Force cache
 
   echo "Compile is ok"
 }

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+  Available Targets:
+
+  /t:Package 
+    Builds NuGet packages using the binaries folder contents.
+    The packages will drop to .\binaries\packages.
+  -->
+
+  <PropertyGroup>
+    <major>1</major>
+    <minor>0</minor>
+    <revision>0</revision>
+    <build Condition="'$(BUILD_NUMBER)' == ''">0</build>
+    <build Condition="'$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</build>
+    <commit Condition="'$(GIT_COMMIT)' == ''">?</commit>
+    <commit Condition="'$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</commit>
+    <version>$(major).$(minor).$(revision).$(build)</version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LibraryRoot>$(MSBuildThisFileDirectory)</LibraryRoot>
+    <NuGetCommand>&quot;$(LibraryRoot).nuget\nuget.exe&quot;</NuGetCommand>
+  </PropertyGroup>
+
+  <!-- Target for creating the nuget package -->
+  <Target Name="NugetPack">
+    <Exec Command="$(NuGetCommand) pack &quot;$(LibraryRoot)\cf-iis8-buildpack.nuspec&quot; -Prop commit=$(commit);version=$(version)"/>
+  </Target>
+</Project>

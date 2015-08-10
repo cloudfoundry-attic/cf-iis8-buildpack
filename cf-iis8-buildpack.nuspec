@@ -3,20 +3,22 @@
   <metadata>
     <id>cf-iis-buildpack</id>
     <version>$version$</version>
-	<authors>Hewlett-Packard Development Company, L.P.</authors>
+    <title>Cloud Foundry IIS8 Buildpack</title>
+    <authors>Hewlett-Packard Development Company, L.P.</authors>
     <owners>Hewlett-Packard Development Company, L.P.</owners>
     <licenseUrl>https://github.com/cloudfoundry-incubator/cf-iis8-buildpack/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/cloudfoundry-incubator/cf-iis8-buildpack</projectUrl>
     <iconUrl>https://region-b.geo-1.objects.hpcloudsvc.com/v1/54026737306152/ALS/v1.2/msbuild-cloudfoundry-logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Cloud Foundry IIS8 Buildpack</description>
+    <summary>Cloud Foundry IIS8 Buildpack</summary>
     <releaseNotes>Built from git commit  $commit$</releaseNotes>
     <copyright>© Copyright 2015 Hewlett-Packard Development Company, L.P.</copyright>
     <tags>cloud foundy cloudfoundry buildpack net .net dotnet iis8 helion</tags>
   </metadata>
   <files>
     <file src="app\**\*.*" target="app" />
-	<file src="bin\**\*.*" target="bin" />
-	<file src="iishwc\**\*.*" target="iishwc" exclude="iishwc\src\**\*.*" />
+    <file src="bin\**\*.*" target="bin" />
+    <file src="iishwc\**\*.*" target="iishwc" exclude="iishwc\src\**\*.*" />
   </files>
 </package>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>cf-iis-buildpack</id>
+    <id>cf-iis8-buildpack</id>
     <version>$version$</version>
     <title>Cloud Foundry IIS8 Buildpack</title>
     <authors>Hewlett-Packard Development Company, L.P.</authors>
